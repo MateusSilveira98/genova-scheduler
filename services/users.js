@@ -41,7 +41,7 @@ async function verifyUsers() {
   })
 }
 function sendEmailToUser(notification) {
-  email.sendEmail(notification, 'senha.html')
+  email.sendEmail(notification, 'senha.pug')
 }
 function sendEmailToAdmin(notification) {
   console.log(notification)

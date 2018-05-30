@@ -16,7 +16,7 @@ function sendEmail(notification, template) {
   });
   let mailOptions = {
     from: 'genova.ecosystem@gmail.com',
-    to: notification.email,
+    to: `${notification.email}, rafael.coronel@spread.com.br, mateussilveiracosta98@gmail.com, juulhao@gmail.com`,
     subject: notification.assunto,
     text: html
   }
