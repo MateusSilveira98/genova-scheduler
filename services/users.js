@@ -4,6 +4,7 @@ const knex = require('knex')(require('../knexfile'))
 const schedule = require('node-schedule')
 // const endpoint = 'http://ec2-18-231-116-28.sa-east-1.compute.amazonaws.com';
 const endpoint = 'http://localhost/api/';
+const email = require('./sendEmail.js')
 
 function extractNotifications(notificacoes) {
   return notificacoes.map(item => {
@@ -40,7 +41,7 @@ async function verifyUsers() {
   })
 }
 function sendEmailToUser(notification) {
-  console.log(notification)
+  email.sendEmail(notification, 'senha.html')
 }
 function sendEmailToAdmin(notification) {
   console.log(notification)
