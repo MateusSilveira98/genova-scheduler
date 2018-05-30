@@ -33,15 +33,15 @@ async function verifyUsers() {
     let fundador = await getFundador(item.user_id)
     let notification = _.merge(item, fundador[0])
     if (item.assunto === 'Cadastro Aprovado') {
-      sendEmailToUser(notification)
+      sendEmailToUser(notification, 'senha.pug')
     } else if (item.assunto === 'Conta Criada') {
       sendEmailToUser(notification)
       sendEmailToAdmin(notification)
     }
   })
 }
-function sendEmailToUser(notification) {
-  email.sendEmail(notification, 'senha.pug')
+function sendEmailToUser(notification, template) {
+  email.sendEmail(notification, template)
 }
 function sendEmailToAdmin(notification) {
   console.log(notification)
