@@ -14,23 +14,17 @@ function sendEmail(notification, template) {
   let html = compiledFunction({
     notification
   });
-  let split = html.split('<body>')
-  let split2 = split[1].split('</body>')
-  html = split2[0]
   let mailOptions = {
     from: 'genova.ecosystem@gmail.com',
     to: `${notification.email}, rafael.coronel@spread.com.br, mateussilveiracosta98@gmail.com, juulhao@gmail.com`,
     subject: notification.assunto,
     html
   }
-  
-  transporter.sendMail(mailOptions, function (error, info) {
-    if (error) {
-      console.log(error);
-    } else {
-      console.log('Email sent: ' + info.response);
-    }
-  });
+  return new Promise((resolve, reject) => {
+    return transporter.sendMail(mailOptions, (error, info) => {
+      return error ? resolve(false) : resolve(true)
+    })
+  })
 }
 
 module.exports = {

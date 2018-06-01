@@ -5,5 +5,8 @@ const users = require('../services/users')
 router.get('/', function(req, res, next) {
   res.send({ body: users.verifyUsers()})
 });
+router.post('/', function(req, res, next) {
+  res.send({ body: users.verifyUsers()})
+});
 
 module.exports = router;

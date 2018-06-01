@@ -27,6 +27,14 @@ async function getFundador(id) {
   let response = await knex('bolt_fundadores').where({id, aprovado: true}).select('nome', 'sobrenome')
   return response
 }
+async function updateNotification(notification) {
+  let response = await knex('bolt_notificacoes')
+    .where('id', notification.id)
+    .update({
+      enviado: true,
+    })
+  console.log('update', response)
+}
 async function verifyUsers() {
   let notifications = extractNotifications(await getNotificacoes());
   notifications.map(async item => {
@@ -42,6 +50,11 @@ async function verifyUsers() {
 }
 function sendEmailToUser(notification, template) {
   email.sendEmail(notification, template)
+    .then(sended => {
+      if (sended) {
+        updateNotification(notification)
+      }
+    })
 }
 function sendEmailToAdmin(notification) {
   console.log(notification)
