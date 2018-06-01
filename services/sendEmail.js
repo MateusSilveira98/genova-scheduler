@@ -14,11 +14,14 @@ function sendEmail(notification, template) {
   let html = compiledFunction({
     notification
   });
+  let split = html.split('<body>')
+  let split2 = split[1].split('</body>')
+  html = split2[0]
   let mailOptions = {
     from: 'genova.ecosystem@gmail.com',
     to: `${notification.email}, rafael.coronel@spread.com.br, mateussilveiracosta98@gmail.com, juulhao@gmail.com`,
     subject: notification.assunto,
-    text: html
+    html
   }
   
   transporter.sendMail(mailOptions, function (error, info) {
