@@ -4,6 +4,8 @@ const knex = require('knex')(require('../knexfile'))
 const schedule = require('node-schedule')
 // const endpoint = 'http://ec2-18-231-116-28.sa-east-1.compute.amazonaws.com';
 const endpoint = 'http://localhost/api/';
+// const frontEndEndpoint = 'http://genova-staging.s3-website-us-east-1.amazonaws.com/'
+const frontEndEndpoint = 'http://localhost:8080/'
 const email = require('./sendEmail.js')
 
 function extractNotifications(notificacoes) {
@@ -24,8 +26,12 @@ async function getNotificacoes()  {
   return _.filter(response.data.data, item => !item.attributes.enviado)
 }
 async function getFundador(id) {
-  let response = await knex('bolt_fundadores').where({id, aprovado: true}).select('nome', 'sobrenome')
+  let response = await knex('bolt_fundadores').where({id, aprovado: true}).select('nome', 'sobrenome');
   return response
+}
+async function getAdmin() {
+  let admin = await knex('bolt_users').where({ roles: '["root", "everyone"]'}).select();
+  return admin
 }
 async function updateNotification(notification) {
   let response = await knex('bolt_notificacoes')
@@ -36,28 +42,37 @@ async function updateNotification(notification) {
   console.log('update', response)
 }
 async function verifyUsers() {
-  let notifications = extractNotifications(await getNotificacoes());
-  notifications.map(async item => {
-    let fundador = await getFundador(item.user_id)
-    let notification = _.merge(item, fundador[0])
-    if (item.assunto === 'Cadastro Aprovado') {
-      sendEmailToUser(notification, 'senha.pug')
-    } else if (item.assunto === 'Conta Criada') {
-      sendEmailToUser(notification)
-      sendEmailToAdmin(notification)
-    }
+  schedule.scheduleJob({ rule: '*/30 * * * * *' }, async () => {
+    let notifications = extractNotifications(await getNotificacoes());
+    notifications.map(async item => {
+      let fundador = await getFundador(item.user_id)
+      let notification = _.merge(item, fundador[0])
+      if (item.assunto === 'Cadastro aprovado') {
+        sendEmailToUser(notification, 'conta_aprovada.pug')
+      } else if (item.assunto === 'Conta criada') {
+        sendEmailToUser(notification, 'conta_empresa_criada.pug')
+        sendEmailToAdmin(notification, 'conta_empresa_criada_admin.pug')
+      } else if (item.assunto === 'Recuperar senha') {
+        notification.url_senha = frontEndEndpoint + `users/recuperar-senha/${notification.user_id}`
+        sendEmailToUser(notification, 'senha.pug')
+      }
+    })
+    console.log('ta rodando')
   })
 }
 function sendEmailToUser(notification, template) {
   email.sendEmail(notification, template)
     .then(sended => {
       if (sended) {
-        updateNotification(notification)
+        updateNotification(notification);
       }
     })
 }
-function sendEmailToAdmin(notification) {
-  console.log(notification)
+async function sendEmailToAdmin(notification, template) {
+  let admin = await getAdmin();
+  notification.email = admin.email;
+  notification.user_id = admin.id;
+  sendEmailToUser(notification, template);
 }
 module.exports = {
   verifyUsers
