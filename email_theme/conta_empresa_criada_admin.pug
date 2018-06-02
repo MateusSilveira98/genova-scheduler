@@ -13,10 +13,9 @@ html
       tr
         td
           p(style="color:#000; font-weight: bold;margin:5% 5% 0%;font-family: 'Roboto', sans-serif;font-size:24px")
-            | Oi, #{notification['nome']} #{notification['sobrenome']}
-          p(style="color:#000; font-weight: regular;margin:5% 5% 0%;font-family: 'Roboto', sans-serif;font-size:24px;")
+            | O usuário #{notification['nome']} #{notification['sobrenome']}, cujo email é #{notification['user_email']},
             | #{notification['mensagem']}
           p(style="color:#000; font-weight: regular;margin:5% 5% 0%;font-family: 'Roboto', sans-serif;font-size:24px;")
-            | Agora é só aguardar aprovação do administrador.
+            | Está no aguarde de sua aprovação.
           p(style="color:#000; font-weight: regular;margin:5% 5% 0%;font-family: 'Roboto', sans-serif;font-size:24px;")
             | Até logo!

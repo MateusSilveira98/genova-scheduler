@@ -30,7 +30,7 @@ async function getFundador(id) {
   return response
 }
 async function getAdmin() {
-  let admin = await knex('bolt_users').where({ roles: '["root", "everyone"]'}).select();
+  let admin = await knex('bolt_users').where({ roles: '["root","everyone"]'}).select();
   return admin
 }
 async function updateNotification(notification) {
@@ -70,8 +70,9 @@ function sendEmailToUser(notification, template) {
 }
 async function sendEmailToAdmin(notification, template) {
   let admin = await getAdmin();
-  notification.email = admin.email;
-  notification.user_id = admin.id;
+  notification.user_email = notification.email;
+  notification.email = admin[0].email;
+  notification.admin_id = admin[0].id;
   sendEmailToUser(notification, template);
 }
 module.exports = {
