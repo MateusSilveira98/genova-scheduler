@@ -12,7 +12,7 @@ function extractNotifications(notificacoes) {
   return notificacoes.map(item => {
     let notificacao = {
       id: item.id,
-      user_id: item.relationships.fundadores.data[0].id,
+      fundador_id: item.relationships.fundadores.data[0].id,
       email: item.attributes.destinatario,
       mensagem: item.attributes.mensagem,
       assunto: item.attributes.assunto,
@@ -26,7 +26,7 @@ async function getNotificacoes()  {
   return _.filter(response.data.data, item => !item.attributes.enviado)
 }
 async function getFundador(id) {
-  let response = await knex('bolt_fundadores').where({id, aprovado: true}).select('nome', 'sobrenome');
+  let response = await knex('bolt_fundadores').where({id, aprovado: true}).select('nome', 'sobrenome', 'user_id');
   return response
 }
 async function getAdmin() {
@@ -45,7 +45,7 @@ async function verifyUsers() {
   schedule.scheduleJob({ rule: '*/30 * * * * *' }, async () => {
     let notifications = extractNotifications(await getNotificacoes());
     notifications.map(async item => {
-      let fundador = await getFundador(item.user_id)
+      let fundador = await getFundador(item.fundador_id)
       let notification = _.merge(item, fundador[0])
       if (item.assunto === 'Cadastro aprovado') {
         sendEmailToUser(notification, 'conta_aprovada.pug')
@@ -53,11 +53,11 @@ async function verifyUsers() {
         sendEmailToUser(notification, 'conta_empresa_criada.pug')
         sendEmailToAdmin(notification, 'conta_empresa_criada_admin.pug')
       } else if (item.assunto === 'Recuperar senha') {
-        notification.url_senha = frontEndEndpoint + `users/recuperar-senha/${notification.user_id}`
+        notification.url_senha = frontEndEndpoint + `recuperar-senha/${notification.user_id}`
         sendEmailToUser(notification, 'senha.pug')
       }
     })
-    console.log('ta rodando')
+    console.log('Rodou um ciclo. Daqui a 30seg vai rodar denovo...')
   })
 }
 function sendEmailToUser(notification, template) {
