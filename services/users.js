@@ -5,8 +5,8 @@ const schedule = require('node-schedule')
 // const endpoint = 'http://ec2-18-231-122-142.sa-east-1.compute.amazonaws.com';
 const endpoint = 'http://localhost/api/';
 // const frontEndEndpoint = 'http://genova-staging.s3-website-us-east-1.amazonaws.com/'
-const frontEndEndpoint = 'http://localhost:8080/'
-const email = require('./sendEmail.js')
+const frontEndEndpoint = 'http://localhost:8080/';
+const email = require('./sendEmail.js');
 
 function extractNotifications(notificacoes) {
   return notificacoes.map(item => {
@@ -50,6 +50,9 @@ async function verifyUsers() {
       if (item.assunto === 'Cadastro aprovado') {
         sendEmailToUser(notification, 'conta_aprovada.pug')
       } else if (item.assunto === 'Conta criada') {
+        sendEmailToUser(notification, 'conta_empresa_criada.pug')
+        sendEmailToAdmin(notification, 'conta_empresa_criada_admin.pug')
+      } else if (item.assunto === 'Empresa criada') {
         sendEmailToUser(notification, 'conta_empresa_criada.pug')
         sendEmailToAdmin(notification, 'conta_empresa_criada_admin.pug')
       } else if (item.assunto === 'Recuperar senha') {
