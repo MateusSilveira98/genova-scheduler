@@ -2,13 +2,13 @@ const _ = require('lodash')
 const http = require('axios')
 const knex = require('knex')(require('../knexfile'))
 const schedule = require('node-schedule')
+const Email = require('./sendEmail.js');
 // const apiEndpoint = 'http://ec2-18-231-122-142.sa-east-1.compute.amazonaws.com/api/';
 const apiEndpoint = 'http://localhost/api/';
 // const frontEndEndpoint = 'http://genova-staging.s3-website-us-east-1.amazonaws.com/'
 const frontEndEndpoint = 'http://localhost:8080/';
 // const BoltEndpoint = 'http://ec2-18-231-122-142.sa-east-1.compute.amazonaws.com/bolt/';
 const boltEndpoint = 'http://localhost/bolt/';
-const email = require('./sendEmail.js');
 
 function extractNotifications(notificacoes) {
   return notificacoes.map(item => {
@@ -55,6 +55,10 @@ async function getEmpresaByNome(nome) {
   let response = await knex('bolt_empresas').where({nome}).select('id');
   return response
 }
+async function getEmpresaByUserId(userId)  {
+  let response = await http.get(`${apiEndpoint}empresas?filter[fundadores]=${userId}&filter[aprovado]=false`);
+  return response.data.data[0]
+}
 async function getVagaByNome(nome) {
   let response = await knex('bolt_vagas').where({nome}).select('id');
   return response
@@ -73,10 +77,12 @@ async function verifyUsers() {
         sendEmailToUser(notification, 'conta_aprovada.pug');
       } else if (item.assunto === 'Conta criada') {
         notification.url_conta = boltEndpoint + `editcontent/fundadores/${notification.user_id}`;
-        sendEmailToUser(notification, 'conta_criada.pug');
+        sendEmailToUser(notification, 'conta_empresa_criada.pug');
         sendEmailToAdmin(notification, 'conta_criada_admin.pug');
       } else if (item.assunto === 'Empresa criada') {
-        sendEmailToUser(notification, 'empresa_criada.pug');
+        let empresa = await getEmpresaByUserId(notification.user_id);
+        notification.url_empresa = boltEndpoint + `editcontent/empresas/${empresa.id}`;
+        sendEmailToUser(notification, 'conta_empresa_criada.pug');
         sendEmailToAdmin(notification, 'empresa_criada_admin.pug');
       } else if (item.assunto === 'Recuperar senha') {
         notification.url_senha = frontEndEndpoint + `recuperar-senha/${notification.user_id}`;
@@ -102,7 +108,7 @@ async function verifyUsers() {
   })
 }
 function sendEmailToUser(notification, template) {
-  email.sendEmail(notification, template)
+  Email.sendEmail(notification, template)
     .then(sended => {
       if (sended) {
         updateNotification(notification);
