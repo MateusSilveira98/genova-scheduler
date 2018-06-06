@@ -9,13 +9,18 @@ html
     table(align='center')
       tr
         td
-          img(src='http://res.cloudinary.com/ornito-media/image/upload/v1527875773/header_zefxmx.png', alt='Header')
+          img(src='http://res.cloudinary.com/ornito-media/image/upload/v1527875773/header_zefxmx.png', alt='Recuperar Senha')
       tr
         td
-          p(style="color:#000; font-weight: bold;margin:5% 5% 0%;font-family: 'Roboto', sans-serif;font-size:24px")
-            | O usuário #{notification['nome']} #{notification['sobrenome']}, cujo email é #{notification['user_email']},
-            | #{notification['mensagem']}
           p(style="color:#000; font-weight: regular;margin:5% 5% 0%;font-family: 'Roboto', sans-serif;font-size:24px;")
-            | Está no aguarde de sua aprovação.
+            | Uma nova conta foi criada
           p(style="color:#000; font-weight: regular;margin:5% 5% 0%;font-family: 'Roboto', sans-serif;font-size:24px;")
-            | Até logo!
+            | Clique no botão abaixo para alterar.
+          p(style="font-family: 'Roboto', sans-serif;text-align: center; margin-top:10%;margin-bottom:15px")
+            a(href=`${notification.url_conta}`, style='background: #01BCA2;\
+            color: #fff;\
+            padding: 12px 15px;\
+            font-size: 18px;\
+            font-weight: lighter;\
+            text-decoration: none;')
+              | Acessar

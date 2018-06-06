@@ -13,13 +13,13 @@ html
       tr
         td
           p(style="color:#000; font-weight: bold;margin:5% 5% 0%;font-family: 'Roboto', sans-serif;font-size:24px")
-            | Oi, #{notification.nome} #{notification.sobrenome}
+            | Oi, #{notification['nome']} #{notification['sobrenome']}
           p(style="color:#000; font-weight: regular;margin:5% 5% 0%;font-family: 'Roboto', sans-serif;font-size:24px;")
             | sua conta foi aprovada!
           p(style="color:#000; font-weight: regular;margin:5% 5% 0%;font-family: 'Roboto', sans-serif;font-size:24px;")
             | Clique no botão abaixo para acessar.
           p(style="font-family: 'Roboto', sans-serif;text-align: center; margin-top:10%;margin-bottom:15px")
-            a(href='#', style='background: #01BCA2;\
+            a(href=`${notification.url_conta}`, style='background: #01BCA2;\
             color: #fff;\
             padding: 12px 15px;\
             font-size: 18px;\
