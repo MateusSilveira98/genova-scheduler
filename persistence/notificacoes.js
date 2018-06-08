@@ -18,7 +18,7 @@ async function updateNotification(notification) {
     console.log(e)
   }
 }
-async function insertNotificacao(notification) {
+async function insertNotificacao(notification, apiEndpoint) {
   try {
     let response = await http({
       method: 'post',
@@ -29,7 +29,7 @@ async function insertNotificacao(notification) {
         'Content-Type': 'application/json'
       }
     })
-    return response.data.id
+    return response.id
   } catch (e) {
     return e
   }

@@ -1,3 +1,4 @@
+const knex = require('knex')(require('../knexfile'))
 async function getFundadorById(id) {
   try {
     let response = await knex('bolt_fundadores').where({ id, aprovado: true }).select('nome', 'sobrenome', 'user_id');

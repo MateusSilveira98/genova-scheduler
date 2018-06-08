@@ -5,7 +5,7 @@ const frontEndEndpoint = 'http://localhost:8080/';
 // const BoltEndpoint = 'http://ec2-18-231-122-142.sa-east-1.compute.amazonaws.com/bolt/';
 const boltEndpoint = 'http://localhost/bolt/';
 
-module.exports {
+module.exports = {
   apiEndpoint,
   frontEndEndpoint,
   boltEndpoint
